@@ -1,4 +1,4 @@
-package com.dh.demo;
+package com.dh.demo.Models;
 
 import javax.persistence.*;
 

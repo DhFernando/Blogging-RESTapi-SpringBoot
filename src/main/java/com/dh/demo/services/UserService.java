@@ -1,24 +1,26 @@
-package com.dh.demo;
+package com.dh.demo.services;
 
+import com.dh.demo.Interfaces.IUserRepository;
+import com.dh.demo.Models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class PersonService {
-
+public class UserService {
     @Autowired
-    private IPersonRepository repo;
+    private IUserRepository repo;
 
-    public List<Person> getAll(){
+    public List<User> getAll(){
         return repo.findAll();
     }
-    public void save(Person person){
+
+    public void save(User person){
         repo.save(person);
     }
 
-    public Person get(int id){
+    public User get(int id){
         return repo.findById(id).get();
     }
 
