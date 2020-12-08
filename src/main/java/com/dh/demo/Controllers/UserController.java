@@ -1,6 +1,7 @@
 package com.dh.demo.Controllers;
 
 import com.dh.demo.Models.User;
+import com.dh.demo.Projection.UserProjection;
 import com.dh.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,6 @@ public class UserController {
     private UserService service;
 
     @GetMapping("/users")
-    public List<User> getUsers() { return service.getAll(); }
+    public List<UserProjection> getUsers() { return service.getAll(); }
 
 }

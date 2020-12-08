@@ -28,7 +28,7 @@ public class User {
     @Column(name = "imageUrl")
     public String imageUrl;
 
-    public User( Integer id, String userName , String email ,String passwordHash , String permissionLevel , Date joinedDate ,String imageUrl ){
+    public User(  String userName , String email ,String passwordHash , String permissionLevel , Date joinedDate , String imageUrl ){
         this.userName = userName;
         this.email = email;
         this.passwordHash = passwordHash;
