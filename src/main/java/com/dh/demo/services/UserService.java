@@ -15,7 +15,7 @@ public class UserService {
 
     public List<UserProjection> getAll(){ return repo.getAllUsers(); }
 
-    public void save(User person){ repo.save(person); }
+    public User save(User person){ return repo.save(person); }
 
     public User get(int id){ return repo.findById(id).get(); }
 

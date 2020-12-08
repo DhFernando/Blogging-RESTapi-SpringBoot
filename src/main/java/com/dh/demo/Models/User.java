@@ -1,10 +1,13 @@
 package com.dh.demo.Models;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Data
 @Entity
 @Table(name="users")
 public class User {
@@ -13,22 +16,22 @@ public class User {
     private Integer Id;
 
     @Column(name = "userName")
-    public String userName;
+    private String userName;
 
     @Column(name = "email")
-    public String email;
+    private String email;
 
     @Column(name = "passwordHash")
-    public String passwordHash;
+    private String passwordHash;
 
     @Column(name = "permissionLevel")
-    public String permissionLevel;
+    private String permissionLevel;
 
     @Column(name = "joinedDate")
-    public Date joinedDate;
+    private Date joinedDate;
 
     @Column(name = "imageUrl")
-    public String imageUrl;
+    private String imageUrl;
 
     @OneToMany(mappedBy = "creatorId")
     public List<Article> articles = new ArrayList<>();
@@ -43,7 +46,4 @@ public class User {
     }
 
     public User(){}
-
-    public void setId(int id){ this.Id = id; }
-
 }

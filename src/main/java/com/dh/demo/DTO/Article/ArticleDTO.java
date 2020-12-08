@@ -1,4 +1,4 @@
-package com.dh.demo.DTO;
+package com.dh.demo.DTO.Article;
 
 import com.dh.demo.Models.Article;
 import lombok.Data;
