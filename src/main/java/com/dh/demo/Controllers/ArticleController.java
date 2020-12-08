@@ -18,4 +18,6 @@ public class ArticleController {
     @GetMapping("/articles")
     public List<Article> getArticles(){ return service.getAll(); }
 
+
+
 }

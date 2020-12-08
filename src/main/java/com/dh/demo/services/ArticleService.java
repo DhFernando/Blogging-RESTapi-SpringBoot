@@ -26,4 +26,8 @@ public class ArticleService {
     public void delete(int id){
         repo.deleteById(id);
     }
+
+    public List<Article> getArticleByUserId(Integer id){
+        return repo.getArticleByUserIdx(id);
+    }
 }
