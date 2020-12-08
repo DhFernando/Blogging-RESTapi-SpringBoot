@@ -22,7 +22,7 @@ public class UserController {
 
     @GetMapping("/user/{id}/articles")
     public List<Article> getArticlesByUserId(@PathVariable Integer id){
-        return articleService.getArticleByUserId(id);
+        return articleService.getArticlesByUserId(id);
     }
 
 }

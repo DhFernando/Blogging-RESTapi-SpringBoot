@@ -1,6 +1,5 @@
 package com.dh.demo.Models;
 
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -23,6 +22,9 @@ public class Article {
     public String status;
     @Column(name = "likes")
     public Integer likes;
+
+//    @ManyToOne
+//    public User creator;
 
     public Article(String title , String body , Integer creatorId , Date createdDate , String status , Integer likes ){
         this.body = body;

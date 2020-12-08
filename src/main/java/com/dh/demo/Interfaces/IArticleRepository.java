@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface IArticleRepository extends JpaRepository<Article , Integer> {
     @Query(value =  "select * from articles where creatorId = :id" , nativeQuery = true)
-    List<Article> getArticleByUserIdx(Integer id); 
+    List<Article> findArticlesByUserId(Integer id);
 }

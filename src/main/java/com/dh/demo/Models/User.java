@@ -1,7 +1,9 @@
 package com.dh.demo.Models;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="users")
@@ -27,6 +29,9 @@ public class User {
 
     @Column(name = "imageUrl")
     public String imageUrl;
+
+    @OneToMany(mappedBy = "creatorId")
+    public List<Article> articles = new ArrayList<>();
 
     public User(  String userName , String email ,String passwordHash , String permissionLevel , Date joinedDate , String imageUrl ){
         this.userName = userName;
