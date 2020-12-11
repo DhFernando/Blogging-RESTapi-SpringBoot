@@ -50,7 +50,7 @@ public class UserController {
     @GetMapping("user/{id}")
     public UserDto getUser(@PathVariable Integer id){
         ModelMapper modelMapper = new ModelMapper();
-        User u = service.get(id);
+        User u = service.getUser(id);
         return  modelMapper.map(u , UserDto.class);
     }
 
@@ -62,7 +62,7 @@ public class UserController {
 
         u.setJoinedDate(new Date()) ;
         u.setPermissionLevel("user");
-        u.setPasswordHash(passwordEncoder.encode(userCreateDto.getPasswordHash()));
+        u.setPasswordHash(passwordEncoder.encode(userCreateDto.getPassword()));
 
         User createdUser = service.save(u);
 

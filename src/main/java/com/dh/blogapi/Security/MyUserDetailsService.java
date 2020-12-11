@@ -19,17 +19,9 @@ public class MyUserDetailsService implements UserDetailsService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String Id) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String userNameOrEmail) throws UsernameNotFoundException {
 
-        com.dh.blogapi.Models.User u =  userService.get(Integer.parseInt(Id));
-
-        return new User( String.valueOf(u.getId()) ,  u.getPasswordHash()  ,  new ArrayList<>());
-    }
-
-    public UserDetails getUserById( Integer Id ) throws UsernameNotFoundException {
-
-        com.dh.blogapi.Models.User u =  userService.get(Id);
-
-        return new User( String.valueOf(u.getId()) ,  u.getPasswordHash()  ,  new ArrayList<>());
+        com.dh.blogapi.Models.User u =  userService.getUserByUserNameOrEmail(userNameOrEmail);
+        return new User( u.getUserName() ,  u.getPasswordHash()  ,  new ArrayList<>());
     }
 }

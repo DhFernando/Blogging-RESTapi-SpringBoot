@@ -33,15 +33,16 @@ public class HomeController {
     @PostMapping("/authenticate")
     public JwtResponse authenticate(@RequestBody JwtRequest jwtRequest) throws Exception{
         try{
+
             authenticationManager.authenticate( new UsernamePasswordAuthenticationToken(
-                    jwtRequest.getUsername(),
+                    jwtRequest.getUserNameOrEmail(),
                     jwtRequest.getPassword()
             ));
         }catch (BadCredentialsException e){
             throw  new Exception("username password error" , e);
         }
 
-        final UserDetails userDetails = myUserDetailsService.loadUserByUsername(jwtRequest.getUsername());
+        final UserDetails userDetails = myUserDetailsService.loadUserByUsername(jwtRequest.getUserNameOrEmail());
         final String token = jwtUtility.generateToken(userDetails);
 
         return  new JwtResponse(token);

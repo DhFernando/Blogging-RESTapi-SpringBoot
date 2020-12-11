@@ -17,7 +17,9 @@ public class UserService {
 
     public User save(User person){ return repo.save(person); }
 
-    public User get(int id){ return repo.findById(id).get(); }
+    public User getUser(int id){ return repo.findById(id).get(); }
 
     public void delete(int id){  repo.deleteById(id); }
+
+    public User getUserByUserNameOrEmail( String userNameOrEmail ){ return repo.findUserByUserNameOrEmail( userNameOrEmail ); }
 }
