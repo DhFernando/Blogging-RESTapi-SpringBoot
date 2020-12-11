@@ -1,0 +1,7 @@
+package com.dh.blogapi.Interfaces;
+
+import com.dh.blogapi.Models.Blog;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface IBlogRepository extends JpaRepository<Blog , Integer> {
+}

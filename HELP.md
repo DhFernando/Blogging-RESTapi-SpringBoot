@@ -1,3 +1,8 @@
+# Read Me First
+The following was discovered as part of building this project:
+
+* The original package name 'com.dh.blog-api' is invalid and this project uses 'com.dh.blogapi' instead.
+
 # Getting Started
 
 ### Reference Documentation
