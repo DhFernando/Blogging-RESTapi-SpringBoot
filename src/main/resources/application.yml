@@ -1,5 +1,5 @@
 server:
-  port:8090
+  port: 8090
 
 jwt:
-  secret:secret123
+  secret: secret123

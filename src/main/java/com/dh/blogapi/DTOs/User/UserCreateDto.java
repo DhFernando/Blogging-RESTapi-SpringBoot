@@ -11,7 +11,7 @@ public class UserCreateDto {
     @NotNull
     private String email;
     @NotNull
-    private String passwordHash;
+    private String password;
     private String imageUrl;
 }
 

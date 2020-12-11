@@ -30,7 +30,7 @@ public class HomeController {
         return "Welcome Security";
     }
 
-    @PostMapping("authenticate")
+    @PostMapping("/authenticate")
     public JwtResponse authenticate(@RequestBody JwtRequest jwtRequest) throws Exception{
         try{
             authenticationManager.authenticate( new UsernamePasswordAuthenticationToken(
