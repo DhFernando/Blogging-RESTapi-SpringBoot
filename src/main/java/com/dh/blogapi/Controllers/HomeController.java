@@ -2,26 +2,33 @@ package com.dh.blogapi.Controllers;
 
 import com.dh.blogapi.DTOs.JWT.JwtRequest;
 import com.dh.blogapi.DTOs.JWT.JwtResponse;
-import com.dh.blogapi.Security.AuthUserDetails;
+import com.dh.blogapi.Models.User;
+import com.dh.blogapi.Security.CustomUserDetailsService;
+import com.dh.blogapi.Services.UserService;
 import com.dh.blogapi.Utility.JWTUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 public class HomeController {
+    @Autowired
+    private UserService userService;
+
     @Autowired
     private JWTUtility jwtUtility;
 
     @Autowired
-    private AuthUserDetails authUserDetails;
+    private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -42,8 +49,14 @@ public class HomeController {
             throw  new Exception("username password error" , e);
         }
 
-        final UserDetails userDetails = authUserDetails.loadUserByUsername(jwtRequest.getUsernameOrEmail());
-        final String token = jwtUtility.generateToken(userDetails);
+        final UserDetails userDetails = customUserDetailsService.loadUserByUsername(jwtRequest.getUsernameOrEmail());
+
+        // add custom user Authentications
+        Map<String, Object> claims = new HashMap<>();
+        User u = userService.getUserByUserNameOrEmail(jwtRequest.getUsernameOrEmail());
+        claims.put( "permissionLevel" , u.getPermissionLevel() );
+
+        final String token = jwtUtility.generateToken( claims , userDetails);
 
         return  new JwtResponse(token);
     }

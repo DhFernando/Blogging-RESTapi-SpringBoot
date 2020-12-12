@@ -2,6 +2,7 @@ package com.dh.blogapi.Security;
 
 import com.dh.blogapi.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,8 +12,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @Service
-public class AuthUserDetails implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UserService userService;
     @Autowired
@@ -23,7 +27,12 @@ public class AuthUserDetails implements UserDetailsService {
 
         // load user
         com.dh.blogapi.Models.User u =  userService.getUserByUserNameOrEmail(usernameOrEmail);
+
+        // role
+
+        List<SimpleGrantedAuthority> role = Arrays.asList(new SimpleGrantedAuthority( u.getPermissionLevel() ));
+
         // authenticated User create
-        return new User( u.getUsername() ,  u.getPasswordHash()  ,  new ArrayList<>());
+        return new User( u.getUsername() ,  u.getPasswordHash()  ,  role);
     }
 }

@@ -1,6 +1,6 @@
 package com.dh.blogapi.Filter;
 
-import com.dh.blogapi.Security.AuthUserDetails;
+import com.dh.blogapi.Security.CustomUserDetailsService;
 import com.dh.blogapi.Utility.JWTUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,7 +23,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private JWTUtility jwtUtility;
 
     @Autowired
-    private AuthUserDetails userService;
+    private CustomUserDetailsService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {

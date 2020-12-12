@@ -21,7 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private AuthUserDetails authUserDetails;
+    private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     private JwtFilter jwtFilter;
@@ -33,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(authUserDetails);
+        auth.userDetailsService(customUserDetailsService);
     }
 
     @Override

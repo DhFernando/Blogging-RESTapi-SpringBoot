@@ -33,7 +33,7 @@ public class BlogController {
 
             return new ResponseEntity<>(modelMapper.map(createdArticle , BlogDto.class) , HttpStatus.OK );
         }catch (Exception e){
-            return new ResponseEntity<>( "Internal Sever Error"  , HttpStatus.INTERNAL_SERVER_ERROR)
+            return new ResponseEntity<>( "Internal Sever Error"  , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -45,7 +45,7 @@ public class BlogController {
                 return modelMapper.map(blog , BlogDto.class);
             } ).collect(Collectors.toList()) , HttpStatus.OK );
         }catch (Exception e){
-            return new ResponseEntity<>( "Internal Server Error" , HttpStatus.INTERNAL_SERVER_ERROR )
+            return new ResponseEntity<>( "Internal Server Error" , HttpStatus.INTERNAL_SERVER_ERROR );
         }
     }
 
