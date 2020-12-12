@@ -8,6 +8,7 @@ import com.dh.blogapi.Services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,26 +48,32 @@ public class UserController {
 //        return obj ;
 //    }
 
-    @GetMapping("user/{id}")
-    public UserDto getUser(@PathVariable Integer id){
+    @GetMapping("user/{username}")
+    public UserDto getUser(@PathVariable String username){
         ModelMapper modelMapper = new ModelMapper();
-        User u = service.getUser(id);
+        User u = service.getUser(username);
         return  modelMapper.map(u , UserDto.class);
     }
 
     @PostMapping("/user")
-    public UserDto createUser(@RequestBody UserCreateDto userCreateDto ){
-        ModelMapper modelMapper = new ModelMapper();
+    public ResponseEntity<?> createUser(@RequestBody UserCreateDto userCreateDto ){
 
-        User u = modelMapper.map(userCreateDto , User.class);
 
-        u.setJoinedDate(new Date()) ;
-        u.setPermissionLevel("user");
-        u.setPasswordHash(passwordEncoder.encode(userCreateDto.getPassword()));
+        boolean res = service.isUsernameOrEmailAlreadyTaken(userCreateDto.getUsername() , userCreateDto.getEmail());
+        if(res == !true){
+            ModelMapper modelMapper = new ModelMapper();
 
-        User createdUser = service.save(u);
+            User u = modelMapper.map(userCreateDto , User.class);
 
-        return modelMapper.map(createdUser , UserDto.class) ;
+            u.setJoinedDate(new Date()) ;
+            u.setPermissionLevel("user");
+            u.setPasswordHash(passwordEncoder.encode(userCreateDto.getPassword()));
+
+            User createdUser = service.save(u);
+
+            return new ResponseEntity<>(modelMapper.map(createdUser , UserDto.class) , HttpStatus.OK ) ;
+        }
+         return new ResponseEntity<>( "username Or email Already Exist" , HttpStatus.CONFLICT );
     }
 
     // -> Error Handling <- \\

@@ -12,16 +12,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 @Service
-public class MyUserDetailsService implements UserDetailsService {
+public class AuthUserDetails implements UserDetailsService {
     @Autowired
     private UserService userService;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String userNameOrEmail) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
 
-        com.dh.blogapi.Models.User u =  userService.getUserByUserNameOrEmail(userNameOrEmail);
-        return new User( u.getUserName() ,  u.getPasswordHash()  ,  new ArrayList<>());
+        // load user
+        com.dh.blogapi.Models.User u =  userService.getUserByUserNameOrEmail(usernameOrEmail);
+        // authenticated User create
+        return new User( u.getUsername() ,  u.getPasswordHash()  ,  new ArrayList<>());
     }
 }

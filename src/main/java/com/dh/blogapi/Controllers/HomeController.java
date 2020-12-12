@@ -2,13 +2,14 @@ package com.dh.blogapi.Controllers;
 
 import com.dh.blogapi.DTOs.JWT.JwtRequest;
 import com.dh.blogapi.DTOs.JWT.JwtResponse;
-import com.dh.blogapi.Security.MyUserDetailsService;
+import com.dh.blogapi.Security.AuthUserDetails;
 import com.dh.blogapi.Utility.JWTUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,7 @@ public class HomeController {
     private JWTUtility jwtUtility;
 
     @Autowired
-    private MyUserDetailsService myUserDetailsService;
+    private AuthUserDetails authUserDetails;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -33,16 +34,15 @@ public class HomeController {
     @PostMapping("/authenticate")
     public JwtResponse authenticate(@RequestBody JwtRequest jwtRequest) throws Exception{
         try{
-
             authenticationManager.authenticate( new UsernamePasswordAuthenticationToken(
-                    jwtRequest.getUserNameOrEmail(),
+                    jwtRequest.getUsernameOrEmail(),
                     jwtRequest.getPassword()
             ));
         }catch (BadCredentialsException e){
             throw  new Exception("username password error" , e);
         }
 
-        final UserDetails userDetails = myUserDetailsService.loadUserByUsername(jwtRequest.getUserNameOrEmail());
+        final UserDetails userDetails = authUserDetails.loadUserByUsername(jwtRequest.getUsernameOrEmail());
         final String token = jwtUtility.generateToken(userDetails);
 
         return  new JwtResponse(token);

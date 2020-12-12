@@ -7,8 +7,7 @@ import java.util.Date;
 @Data
 public class UserDto {
 
-    private Integer Id;
-    private String userName;
+    private String username;
     private String email;
     private String permissionLevel;
     private Date joinedDate;

@@ -7,6 +7,12 @@ import org.springframework.data.repository.query.Param;
 
 public interface IUserRepository extends JpaRepository<User , Integer> {
 
-    @Query( value = "SELECT * FROM users WHERE userName = :userNameOrEmail OR email = :userNameOrEmail" , nativeQuery = true )
-    User findUserByUserNameOrEmail( @Param("userNameOrEmail") String userNameOrEmail );
+    @Query( value = "SELECT * FROM users WHERE username = :usernameOrEmail OR email = :usernameOrEmail" , nativeQuery = true )
+    User findUserByUsernameOrEmail( @Param("usernameOrEmail") String usernameOrEmail );
+
+    @Query( value = "SELECT * FROM users WHERE username = :username" , nativeQuery = true )
+    User findUserByUsername( @Param("username") String username );
+
+    @Query(value = "SELECT COUNT(1) FROM users WHERE username = :username OR email = :emil" , nativeQuery = true)
+    Integer findUsernameOrEmailAlreadyTaken(@Param("username") String username , @Param("emil") String emil );
 }
