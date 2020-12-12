@@ -83,5 +83,6 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.10.5" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.10.5" level="project" />
     <orderEntry type="library" name="Maven: javax.xml.bind:jaxb-api-parent:2.3.0" level="project" />
+    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.13" level="project" />
   </component>
 </module>
