@@ -6,11 +6,12 @@ import com.dh.blogapi.Models.Blog;
 import com.dh.blogapi.Services.BlogService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 public class BlogController {
 
@@ -28,6 +29,24 @@ public class BlogController {
         Blog createdArticle = service.save(a);
 
         return modelMapper.map(createdArticle , BlogDto.class);
+    }
 
+    @GetMapping("/blogs")
+    public List<BlogDto> fetchBlogs(){
+        return service.getAll().stream().map( blog -> {
+            ModelMapper modelMapper = new ModelMapper();
+            return modelMapper.map(blog , BlogDto.class);
+        } ).collect(Collectors.toList());
+    }
+
+    @GetMapping("/blog/{id}")
+    public BlogDto getBlogById(@PathVariable Integer id){
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(service.get(id) , BlogDto.class);
+    }
+
+    @DeleteMapping("blog/{id}")
+    public void deleteBlog(@PathVariable Integer id){
+        service.delete(id);
     }
 }
