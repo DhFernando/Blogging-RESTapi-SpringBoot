@@ -17,6 +17,6 @@ public interface IBlogRepository extends JpaRepository<Blog , Integer> {
     @Query(value = "SELECT * FROM blogs WHERE status = :status AND id = :id" , nativeQuery = true)
     Blog findBlogByStatus(Integer id, String status);
 
-    @Query(value = "SELECT * FROM blogs WHERE username = :username" , nativeQuery = true)
-    List<Blog> findBlogsByUsername(@Param("username") String username);
+    @Query(value = "SELECT * FROM blogs WHERE owner = :owner" , nativeQuery = true)
+    List<Blog> findBlogsByOwner(@Param("owner") String owner);
 }

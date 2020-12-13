@@ -25,5 +25,5 @@ public class BlogService {
 
     public void setStatus(Integer id, String status) {  repo.updateStatus(id , status);  }
 
-    public List<Blog> getBlogsByUsername(String username) {  return repo.findBlogsByUsername(username); }
+    public List<Blog> getBlogsByOwner(String owner) {  return repo.findBlogsByOwner(owner); }
 }

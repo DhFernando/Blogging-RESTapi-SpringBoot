@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -65,7 +66,7 @@ public class BlogController {
 
     @PostMapping("blog/{id}/setStatus")
     public ResponseEntity<?> setStatus(@PathVariable Integer id , @RequestBody String status ){
-        if(jwtDecodeService.decode().getPermissionLevel() == "admin"){
+        if(Objects.equals(jwtDecodeService.decode().getPermissionLevel() , "admin")){
             try{
                 Blog b = service.get(id);
                 service.setStatus(b.getId() , status);
@@ -89,9 +90,7 @@ public class BlogController {
             try {
                 Blog b = service.get(id);
 
-                if(b.getStatus() == "approved" ){
-                    return new ResponseEntity<>(modelMapper.map( b , BlogDto.class) , HttpStatus.OK);
-                }else if(permissionLevel == "user"){
+                if(Objects.equals(b.getStatus(), "approved") || Objects.equals( permissionLevel , "admin") ){
                     return new ResponseEntity<>(modelMapper.map( b , BlogDto.class) , HttpStatus.OK);
                 }else{
                     return new ResponseEntity<>("Permission Denied" , HttpStatus.FORBIDDEN);
@@ -100,42 +99,41 @@ public class BlogController {
                 return new ResponseEntity<>("Blog Not Fount" , HttpStatus.NOT_FOUND);
             }
 
-
         }catch (Exception e){
             return new ResponseEntity<>("Server Error" , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @GetMapping("blogs/{username}")
-    public ResponseEntity<?> getBlogsByUsername(@PathVariable String username){
-        List<Blog>  blogs = service.getBlogsByUsername(username);
-        String permissionLevel = null;
-        if( jwtDecodeService.decode() != null ) {
-            permissionLevel = jwtDecodeService.decode().getPermissionLevel();
+    @GetMapping("blogs/{owner}")
+    public ResponseEntity<?> getBlogsByOwner(@PathVariable String owner){
+
+        try{
+            try {
+                List<Blog>  blogs = service.getBlogsByOwner(owner);
+                return new ResponseEntity<>(blogs.stream().map(blog -> {
+                    if(jwtDecodeService.decode() != null){
+                        if(Objects.equals(jwtDecodeService.decode().getPermissionLevel() , "admin")
+                                || Objects.equals(blog.getStatus() , "approved")
+                                || Objects.equals(jwtDecodeService.decode().getUsername() , blog.getOwner())  ){
+                            ModelMapper modelMapper = new ModelMapper();
+                            return modelMapper.map(blog , BlogDto.class);
+                        }
+                    }else{
+                        if(Objects.equals(blog.getStatus() , "approved")){
+                            ModelMapper modelMapper = new ModelMapper();
+                            return modelMapper.map(blog , BlogDto.class);
+                        }
+                    }
+                    return null;
+
+                }).collect(Collectors.toList()) , HttpStatus.OK);
+            }catch (Exception e){
+                return new ResponseEntity<>("Blogs Not Fount" , HttpStatus.NOT_FOUND);
+            }
+        }catch (Exception e){
+            return new ResponseEntity<>("Internal Server Error" , HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>(service.getBlogsByUsername(username).stream().map(blog -> {
-            if(jwtDecodeService.decode() != null){
-                if(jwtDecodeService.decode().getPermissionLevel() == "admin"){
-                    ModelMapper modelMapper = new ModelMapper();
-                    return modelMapper.map(blog , BlogDto.class);
-                }else if(blog.getStatus() == "approved"){
-                    ModelMapper modelMapper = new ModelMapper();
-                    return modelMapper.map(blog , BlogDto.class);
-                }
-                else{
-                    return  null;
-                }
-            }else{
-                if(blog.getStatus() == "approved"){
-                    ModelMapper modelMapper = new ModelMapper();
-                    return modelMapper.map(blog , BlogDto.class);
-                }else{
-                    return  null;
-                }
-            }
-
-        }).collect(Collectors.toList()) , HttpStatus.OK);
     }
 
     @DeleteMapping("blog/{id}")
