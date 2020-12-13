@@ -33,4 +33,8 @@ public class UserService {
         }
 
     }
+
+    public void setPermission(String username, String setPermissionAs) {
+        repo.updatePermission(username , setPermissionAs);
+    }
 }
