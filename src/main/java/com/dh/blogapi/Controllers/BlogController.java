@@ -32,7 +32,7 @@ public class BlogController {
             a.setCreatedDate(new Date());
             a.setStatus("waiting");
             a.setLikes(0);
-            a.setOwner(jwtDecodeService.jwtDecode().getUsername());
+            a.setOwner(jwtDecodeService.decode().getUsername());
 
             Blog createdArticle = service.save(a);
 
@@ -42,10 +42,19 @@ public class BlogController {
         }
     }
 
-    @GetMapping("/blogs")
-    public ResponseEntity<?> fetchBlogs(){
+    @PostMapping("/blogs")
+    public ResponseEntity<?> fetchBlogsByConditions(@RequestBody String status){
+
+        if( jwtDecodeService.decode() != null ) {
+            if(jwtDecodeService.decode().getPermissionLevel() == "user"){
+                status = "approved";
+            }
+        }else{
+            status = "approved";
+        }
+
         try {
-            return new ResponseEntity<>( service.getAll().stream().map( blog -> {
+            return new ResponseEntity<>( service.getBlogsByStatus(status).stream().map( blog -> {
                 ModelMapper modelMapper = new ModelMapper();
                 return modelMapper.map(blog , BlogDto.class);
             } ).collect(Collectors.toList()) , HttpStatus.OK );
@@ -54,14 +63,79 @@ public class BlogController {
         }
     }
 
+    @PostMapping("blog/{id}/setStatus")
+    public ResponseEntity<?> setStatus(@PathVariable Integer id , @RequestBody String status ){
+        if(jwtDecodeService.decode().getPermissionLevel() == "admin"){
+            try{
+                Blog b = service.get(id);
+                service.setStatus(b.getId() , status);
+            }catch (Exception e){
+                return new ResponseEntity<>("Blog Not Found" , HttpStatus.NOT_FOUND);
+            }
+        }else{
+            return new ResponseEntity<>("Permission denied" , HttpStatus.FORBIDDEN);
+        }
+
+        return new ResponseEntity<>("Server Error" , HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @GetMapping("/blog/{id}")
     public ResponseEntity<?> getBlogById(@PathVariable Integer id){
         try{
+
+            String permissionLevel = jwtDecodeService.decode().getPermissionLevel();
+
             ModelMapper modelMapper = new ModelMapper();
-            return new ResponseEntity<>(modelMapper.map(service.get(id) , BlogDto.class) , HttpStatus.OK);
+            try {
+                Blog b = service.get(id);
+
+                if(b.getStatus() == "approved" ){
+                    return new ResponseEntity<>(modelMapper.map( b , BlogDto.class) , HttpStatus.OK);
+                }else if(permissionLevel == "user"){
+                    return new ResponseEntity<>(modelMapper.map( b , BlogDto.class) , HttpStatus.OK);
+                }else{
+                    return new ResponseEntity<>("Permission Denied" , HttpStatus.FORBIDDEN);
+                }
+            }catch (Exception e){
+                return new ResponseEntity<>("Blog Not Fount" , HttpStatus.NOT_FOUND);
+            }
+
+
         }catch (Exception e){
-            return new ResponseEntity<>("Blog Not found" , HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Server Error" , HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("blogs/{username}")
+    public ResponseEntity<?> getBlogsByUsername(@PathVariable String username){
+        List<Blog>  blogs = service.getBlogsByUsername(username);
+        String permissionLevel = null;
+        if( jwtDecodeService.decode() != null ) {
+            permissionLevel = jwtDecodeService.decode().getPermissionLevel();
+        }
+
+        return new ResponseEntity<>(service.getBlogsByUsername(username).stream().map(blog -> {
+            if(jwtDecodeService.decode() != null){
+                if(jwtDecodeService.decode().getPermissionLevel() == "admin"){
+                    ModelMapper modelMapper = new ModelMapper();
+                    return modelMapper.map(blog , BlogDto.class);
+                }else if(blog.getStatus() == "approved"){
+                    ModelMapper modelMapper = new ModelMapper();
+                    return modelMapper.map(blog , BlogDto.class);
+                }
+                else{
+                    return  null;
+                }
+            }else{
+                if(blog.getStatus() == "approved"){
+                    ModelMapper modelMapper = new ModelMapper();
+                    return modelMapper.map(blog , BlogDto.class);
+                }else{
+                    return  null;
+                }
+            }
+
+        }).collect(Collectors.toList()) , HttpStatus.OK);
     }
 
     @DeleteMapping("blog/{id}")

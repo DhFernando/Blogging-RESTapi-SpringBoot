@@ -3,7 +3,7 @@ package com.dh.blogapi.Utility;
 import lombok.Data;
 
 @Data
-public class TokenUserDetails {
+public class CustomJwtTokenTokenDetails {
     private String username;
     private String permissionLevel;
 }
