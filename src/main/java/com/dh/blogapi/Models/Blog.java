@@ -19,7 +19,7 @@ public class Blog {
     @Column(name = "body")
     private String body;
     @Column(name = "owner")
-    private Integer owner;
+    private String owner;
     @Column(name = "createdDate")
     private Date createdDate;
     @Column(name = "status")

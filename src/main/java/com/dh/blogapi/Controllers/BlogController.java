@@ -4,6 +4,7 @@ import com.dh.blogapi.DTOs.Blog.BlogCreateDto;
 import com.dh.blogapi.DTOs.Blog.BlogDto;
 import com.dh.blogapi.Models.Blog;
 import com.dh.blogapi.Services.BlogService;
+import com.dh.blogapi.Utility.JwtDecodeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,9 @@ import java.util.stream.Collectors;
 public class BlogController {
 
     @Autowired
+    private JwtDecodeService jwtDecodeService;
+
+    @Autowired
     private BlogService service;
 
     @PostMapping("/blog")
@@ -28,6 +32,7 @@ public class BlogController {
             a.setCreatedDate(new Date());
             a.setStatus("waiting");
             a.setLikes(0);
+            a.setOwner(jwtDecodeService.jwtDecode().getUsername());
 
             Blog createdArticle = service.save(a);
 

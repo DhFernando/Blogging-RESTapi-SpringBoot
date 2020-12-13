@@ -6,6 +6,8 @@ import com.dh.blogapi.Models.User;
 import com.dh.blogapi.Security.CustomUserDetailsService;
 import com.dh.blogapi.Services.UserService;
 import com.dh.blogapi.Utility.JWTUtility;
+import com.dh.blogapi.Utility.JwtDecodeService;
+import com.dh.blogapi.Utility.TokenUserDetails;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,12 +19,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 public class HomeController {
+
 
     @Autowired
     private UserService userService;
@@ -61,18 +66,9 @@ public class HomeController {
 
         final String token = jwtUtility.generateToken( claims , userDetails);
 
+
+
         return  new JwtResponse(token);
-    }
-
-    @PostMapping(value = "/tokenDecode" , produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getPayLoad( @RequestBody String token ){
-        String payload = token.split("\\.")[1];
-
-        try{
-            return  new String(Base64.decodeBase64(payload) , "UTF-8" ) ;
-        }catch (Exception e){
-            return null;
-        }
     }
 
 }

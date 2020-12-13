@@ -10,6 +10,5 @@ public class BlogCreateDto {
     private String title;
     @NotNull
     private String body;
-    @NotNull
-    private Integer owner;
+
 }

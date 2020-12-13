@@ -13,7 +13,7 @@ public class BlogDto {
     @NotNull
     private String body;
     @NotNull
-    private Integer owner;
+    private String owner;
     private Date createdDate;
     private String status;
     private Integer likes;
