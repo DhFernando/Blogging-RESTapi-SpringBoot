@@ -18,4 +18,7 @@ public interface IUserRepository extends JpaRepository<User , Integer> {
 
     @Query(value = "SELECT users SET permissionLevel = :setPermissionAs WHERE username = :username" , nativeQuery = true)
     void updatePermission( @Param("username") String username,@Param("setPermissionAs") String setPermissionAs);
+
+    @Query(value = "DELETE FROM users WHERE username = :username" , nativeQuery = true)
+    void removeUser(@Param("username") String username);
 }

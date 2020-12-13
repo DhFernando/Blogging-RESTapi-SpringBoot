@@ -37,4 +37,6 @@ public class UserService {
     public void setPermission(String username, String setPermissionAs) {
         repo.updatePermission(username , setPermissionAs);
     }
+
+    public void deleteUser(String username) { repo.removeUser(username); }
 }

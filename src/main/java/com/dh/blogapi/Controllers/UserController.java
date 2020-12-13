@@ -56,7 +56,7 @@ public class UserController {
 
     @PostMapping("/user")
     public ResponseEntity<?> register(@RequestBody UserCreateDto userCreateDto ){
-        
+
         boolean res = service.isUsernameOrEmailAlreadyTaken(userCreateDto.getUsername() , userCreateDto.getEmail());
         if(res == !true){
             ModelMapper modelMapper = new ModelMapper();
@@ -95,6 +95,22 @@ public class UserController {
             }
         }else{
             return new ResponseEntity<>( "Access Denied" , HttpStatus.UNAUTHORIZED );
+        }
+    }
+
+    @DeleteMapping(value = "user/{username}")
+    public ResponseEntity<?> deleteUser(@PathVariable String username){
+        try {
+            if(Objects.equals(jwtDecodeService.decode().getPermissionLevel() , "admin")
+                    || Objects.equals(service.getUser(username).getUsername() , jwtDecodeService.decode().getUsername())){
+                service.deleteUser(username);
+
+                return new ResponseEntity<>( "User successfully removed form DB" , HttpStatus.OK );
+            }else{
+                return new ResponseEntity<>( "Access Denied" , HttpStatus.UNAUTHORIZED );
+            }
+        }catch (Exception e){
+            return new ResponseEntity<>( "User Not Found" , HttpStatus.NOT_FOUND );
         }
     }
 
