@@ -2,6 +2,7 @@ package com.dh.blogapi.Controllers;
 
 import com.dh.blogapi.DTOs.Blog.BlogCreateDto;
 import com.dh.blogapi.DTOs.Blog.BlogDto;
+import com.dh.blogapi.DTOs.Blog.VoteSummeryDto;
 import com.dh.blogapi.Models.Blog;
 import com.dh.blogapi.Services.BlogService;
 import com.dh.blogapi.Utility.JwtDecodeService;
@@ -32,7 +33,7 @@ public class BlogController {
             Blog a = modelMapper.map( articleCreateDto , Blog.class );
             a.setCreatedDate(new Date());
             a.setStatus("waiting");
-            a.setLikes(0);
+            a.setViews(0);
             a.setOwner(jwtDecodeService.decode().getUsername());
 
             Blog createdArticle = service.save(a);
@@ -44,7 +45,7 @@ public class BlogController {
     }
 
     @PostMapping("/blogs")
-    public ResponseEntity<?> fetchBlogsByConditions(@RequestBody String status){
+    public ResponseEntity<?> fetchBlogs(@RequestBody String status){
 
         if( jwtDecodeService.decode() != null ) {
             if(jwtDecodeService.decode().getPermissionLevel() == "user"){
@@ -139,10 +140,38 @@ public class BlogController {
     @DeleteMapping("blog/{id}")
     public ResponseEntity<?> deleteBlog(@PathVariable Integer id){
         try{
-            service.delete(id);
-            return new ResponseEntity<>("Blog Success Fully Deleted" , HttpStatus.OK );
+
+            Blog b = service.get(id);
+
+            if( b.getOwner() == jwtDecodeService.decode().getUsername()
+                    || jwtDecodeService.decode().getPermissionLevel() == "admin"  ){
+                service.delete(id);
+                return new ResponseEntity<>("Blog Success Fully Deleted" , HttpStatus.OK );
+            }else{
+                return new ResponseEntity<>("Unauthorized access" , HttpStatus.UNAUTHORIZED);
+            }
+
         }catch (Exception e){
             return new ResponseEntity<>("Blog Not found" , HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("blog/{id}/like")
+    public ResponseEntity<?> likeHandler( @PathVariable Integer id ){
+        try{
+            Blog b = service.get(id);
+            if(Objects.nonNull(b)){
+
+//                VoteSummeryDto summery = service.getVoteSummery(b.getId());
+                Integer vote = service.getVoteByUser(id , jwtDecodeService.decode().getUsername();
+                if( vote.equals(1) ){
+
+                }
+            }else{
+                return new ResponseEntity<>( "Blog not found" , HttpStatus.NOT_FOUND );
+            }
+        }catch (Exception e){
+            return new ResponseEntity<>( "Internal Server Error" , HttpStatus.INTERNAL_SERVER_ERROR );
         }
     }
 }

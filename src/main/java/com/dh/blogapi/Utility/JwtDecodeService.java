@@ -11,7 +11,6 @@ public class JwtDecodeService {
 
     public CustomJwtTokenTokenDetails decode() {
 
-
         try{
 
             String token = ((ServletRequestAttributes) RequestContextHolder

@@ -1,5 +1,6 @@
 package com.dh.blogapi.Services;
 
+import com.dh.blogapi.DTOs.Blog.VoteSummeryDto;
 import com.dh.blogapi.Interfaces.IBlogRepository;
 import com.dh.blogapi.Models.Blog;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,4 +27,17 @@ public class BlogService {
     public void setStatus(Integer id, String status) {  repo.updateStatus(id , status);  }
 
     public List<Blog> getBlogsByOwner(String owner) {  return repo.findBlogsByOwner(owner); }
+
+    public VoteSummeryDto getVoteSummery(Integer id){
+
+        VoteSummeryDto sum = new VoteSummeryDto();
+
+        sum.setLikes(repo.countLikeVotes(id));
+        sum.setDislikes(repo.countDisLikeVotes(id));
+
+        return sum;
+    }
+
+    public Integer getVoteByUser(Integer blogId , String username){ return repo.getVoteByUser(blogId , username); }
+
 }

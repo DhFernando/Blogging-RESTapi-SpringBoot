@@ -16,5 +16,5 @@ public class BlogDto {
     private String owner;
     private Date createdDate;
     private String status;
-    private Integer likes;
+    private Integer views;
 }

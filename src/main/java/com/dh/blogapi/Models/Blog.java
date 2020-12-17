@@ -25,5 +25,5 @@ public class Blog {
     @Column(name = "status")
     private String status;
     @Column(name = "likes")
-    private Integer likes;
+    private Integer views;
 }
