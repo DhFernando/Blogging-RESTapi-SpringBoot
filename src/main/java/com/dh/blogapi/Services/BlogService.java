@@ -28,16 +28,19 @@ public class BlogService {
 
     public List<Blog> getBlogsByOwner(String owner) {  return repo.findBlogsByOwner(owner); }
 
-    public VoteSummeryDto getVoteSummery(Integer id){
+//    public VoteSummeryDto getVoteSummery(Integer id){
+//
+//        VoteSummeryDto sum = new VoteSummeryDto();
+//
+//        sum.setLikes(repo.countLikeVotes(id));
+//        sum.setDislikes(repo.countDisLikeVotes(id));
+//
+//        return sum;
+//    }
 
-        VoteSummeryDto sum = new VoteSummeryDto();
-
-        sum.setLikes(repo.countLikeVotes(id));
-        sum.setDislikes(repo.countDisLikeVotes(id));
-
-        return sum;
-    }
-
-    public Integer getVoteByUser(Integer blogId , String username){ return repo.getVoteByUser(blogId , username); }
-
+//    public Integer getVoteByUser(Integer blogId , String username){ return repo.getVoteByUser(blogId , username); }
+//
+//    public void updateBlogVote( Integer vote ,Integer blogId , String username ){
+//        repo.updateBlogVote(vote ,blogId , username);
+//    }
 }

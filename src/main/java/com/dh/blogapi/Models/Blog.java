@@ -24,6 +24,6 @@ public class Blog {
     private Date createdDate;
     @Column(name = "status")
     private String status;
-    @Column(name = "likes")
+    @Column(name = "views")
     private Integer views;
 }

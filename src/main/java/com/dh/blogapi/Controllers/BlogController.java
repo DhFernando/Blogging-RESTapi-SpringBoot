@@ -4,7 +4,9 @@ import com.dh.blogapi.DTOs.Blog.BlogCreateDto;
 import com.dh.blogapi.DTOs.Blog.BlogDto;
 import com.dh.blogapi.DTOs.Blog.VoteSummeryDto;
 import com.dh.blogapi.Models.Blog;
+import com.dh.blogapi.Models.BlogVote;
 import com.dh.blogapi.Services.BlogService;
+import com.dh.blogapi.Services.BlogVoteService;
 import com.dh.blogapi.Utility.JwtDecodeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class BlogController {
 
     @Autowired
     private BlogService service;
+
+    @Autowired
+    private BlogVoteService blogVoteService;
 
     @PostMapping("/blog")
     public ResponseEntity<?> createArticle(@RequestBody BlogCreateDto articleCreateDto){
@@ -156,20 +161,49 @@ public class BlogController {
         }
     }
 
-    @GetMapping("blog/{id}/like")
-    public ResponseEntity<?> likeHandler( @PathVariable Integer id ){
+    @GetMapping("blog/{id}/like/{vote}")
+    public ResponseEntity<?> likeHandler( @PathVariable Integer id , @PathVariable Integer vote){
         try{
-            Blog b = service.get(id);
-            if(Objects.nonNull(b)){
+            Blog b = null;
 
-//                VoteSummeryDto summery = service.getVoteSummery(b.getId());
-                Integer vote = service.getVoteByUser(id , jwtDecodeService.decode().getUsername();
-                if( vote.equals(1) ){
-
-                }
-            }else{
+            try{
+                b = service.get(id);
+            }catch (Exception e){
                 return new ResponseEntity<>( "Blog not found" , HttpStatus.NOT_FOUND );
             }
+
+            if(Objects.equals(b.getStatus() , "approved")) {
+
+                Integer fetchedVote = blogVoteService.getVoteByUser(id, jwtDecodeService.decode().getUsername());
+                if (Objects.nonNull(fetchedVote)) {
+
+                    if (Objects.equals(vote, fetchedVote) && Objects.equals(vote, 1)) {
+                        blogVoteService.updateBlogVote(0, id, jwtDecodeService.decode().getUsername());
+                        return new ResponseEntity<>("update vote", HttpStatus.OK);
+                    } else if (Objects.equals(vote, fetchedVote) && Objects.equals(vote, -1)) {
+                        blogVoteService.updateBlogVote(0, id, jwtDecodeService.decode().getUsername());
+                        return new ResponseEntity<>("update vote", HttpStatus.OK);
+                    } else if (Objects.equals(fetchedVote, 0)) {
+                        blogVoteService.updateBlogVote(vote, id, jwtDecodeService.decode().getUsername());
+                        return new ResponseEntity<>("update vote", HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<>("Something went wrong", HttpStatus.METHOD_NOT_ALLOWED);
+                    }
+
+                } else {
+
+                    BlogVote bv = new BlogVote();
+                    bv.setBlogId(id);
+                    bv.setUsername(jwtDecodeService.decode().getUsername());
+                    bv.setVote(vote);
+                    blogVoteService.save(bv);
+
+                    return new ResponseEntity<>("voted", HttpStatus.OK);
+                }
+            }else{
+                return new ResponseEntity<>( "Blog not approved yet" , HttpStatus.METHOD_NOT_ALLOWED );
+            }
+
         }catch (Exception e){
             return new ResponseEntity<>( "Internal Server Error" , HttpStatus.INTERNAL_SERVER_ERROR );
         }
